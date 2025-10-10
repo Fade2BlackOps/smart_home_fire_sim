@@ -22,16 +22,31 @@ if len(blocks) <= 1:
 # Extract time steps and temperature data
 times = [b["data"]["time"] for b in blocks[1:]]  # Skip genesis block
 temps = list(zip(*[b["data"]["temps"] for b in blocks[1:]]))
+votes = [b["data"]["votes"] for b in blocks[1:]]
+decisions = [b["data"]["decision"] for b in blocks[1:]]
 
+# Determine quorum decision time (first "FIRE DETECTED!")
+quorum_time = None
+for t, d in zip(times, decisions):
+    if "FIRE DETECTED" in d:
+        quorum_time = t
+        break
 
-# Create figure and plot
+# Create figure and plot sensor temperatures
 fig, ax = plt.subplots(figsize=(10, 6))
 for i, sensor_temps in enumerate(temps):
     sensor_temps_f = [to_fahrenheit(t) for t in sensor_temps]
     ax.plot(times, sensor_temps_f, label=f"Sensor {i}")
 
-# Mark the fire start time
+# Plot vertical lines
 ax.axvline(x=FIRE_START, color="r", linestyle="--", label="Fire start")
+if quorum_time is not None:
+    plt.axvline(x=quorum_time, color="g", linestyle="--", label="Quorum Reached")
+
+# Optional: annotate quorum
+if quorum_time is not None:
+    plt.text(quorum_time+0.5, max(max([to_fahrenheit(t) for t in s]) for s in temps),
+             "Quorum Reached", color="green")
 
 # Labels and formatting
 ax.set_title("Smart Home Sensor Temperature Trends")
