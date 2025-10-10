@@ -1,7 +1,7 @@
 # Ignore changes to the data folder
-data/
-data/ledger.json
-data/results.csv
+/data/
+/data/ledger.json
+/data/results.csv
 
 # Ignore the __pycache__ folder completely
 __pycache__/
