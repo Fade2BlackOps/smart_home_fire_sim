@@ -1,5 +1,5 @@
 # Ignore changes to the data folder
-data/
+data/*
 
 # Ignore the __pycache__ folder completely
 __pycache__/
