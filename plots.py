@@ -9,61 +9,71 @@ def to_fahrenheit(celsius):
     return (celsius * 9 / 5) + 32
 
 
-# Read the blockchain ledger
-with open("data/ledger.json", "r") as f:
-    blocks = [json.loads(line) for line in f]
+def generate_plot(ledger_file="data/ledger.json"):
+    """
+    Generate and save a plot of sensor temperature trends over time.
+    Reads from the blockchain ledger file (ledger.json).
+    """
+
+    # Defensive: check if ledger file exists
+    if not os.path.exists(ledger_file):
+        raise FileNotFoundError(f"Ledger file {ledger_file} not found. Run the simulation first.")
+    
+    # Read the blockchain ledger
+    with open(ledger_file, "r") as f:
+        blocks = [json.loads(line) for line in f]
 
 
-# Defensive: if there are no blocks (or only genesis), produce a warning and exit
-if len(blocks) <= 1:
-    raise RuntimeError("Not enough blocks in data/ledger.json to plot temperatures")
+    # Defensive: if there are no blocks (or only genesis), produce a warning and exit
+    if len(blocks) <= 1:
+        raise RuntimeError("Not enough blocks in data/ledger.json to plot temperatures")
 
 
-# Extract time steps and temperature data
-times = [b["data"]["time"] for b in blocks[1:]]  # Skip genesis block
-temps = list(zip(*[b["data"]["temps"] for b in blocks[1:]]))
-votes = [b["data"]["votes"] for b in blocks[1:]]
-decisions = [b["data"]["decision"] for b in blocks[1:]]
+    # Extract time steps and temperature data
+    times = [b["data"]["time"] for b in blocks[1:]]  # Skip genesis block
+    temps = list(zip(*[b["data"]["temps"] for b in blocks[1:]]))
+    votes = [b["data"]["votes"] for b in blocks[1:]]
+    decisions = [b["data"]["decision"] for b in blocks[1:]]
 
-# Determine quorum decision time (first "FIRE DETECTED!")
-quorum_time = None
-for t, d in zip(times, decisions):
-    if "FIRE DETECTED" in d:
-        quorum_time = t
-        break
+    # Determine quorum decision time (first "FIRE DETECTED!")
+    quorum_time = None
+    for t, d in zip(times, decisions):
+        if "FIRE DETECTED" in d:
+            quorum_time = t
+            break
 
-# Create figure and plot sensor temperatures
-fig, ax = plt.subplots(figsize=(10, 6))
-for i, sensor_temps in enumerate(temps):
-    sensor_temps_f = [to_fahrenheit(t) for t in sensor_temps]
-    ax.plot(times, sensor_temps_f, label=f"Sensor {i}")
+    # Create figure and plot sensor temperatures
+    fig, ax = plt.subplots(figsize=(10, 6))
+    for i, sensor_temps in enumerate(temps):
+        sensor_temps_f = [to_fahrenheit(t) for t in sensor_temps]
+        ax.plot(times, sensor_temps_f, label=f"Sensor {i}")
 
-# Plot vertical lines
-ax.axvline(x=FIRE_START, color="r", linestyle="--", label="Fire start")
-if quorum_time is not None:
-    plt.axvline(x=quorum_time, color="g", linestyle="--", label="Quorum Reached")
+    # Plot vertical lines
+    ax.axvline(x=FIRE_START, color="r", linestyle="--", label="Fire start")
+    if quorum_time is not None:
+        plt.axvline(x=quorum_time, color="g", linestyle="--", label="Quorum Reached")
 
-# Optional: annotate quorum
-if quorum_time is not None:
-    plt.text(quorum_time+0.5, max(max([to_fahrenheit(t) for t in s]) for s in temps),
-             "Quorum Reached", color="green")
+    # Optional: annotate quorum
+    if quorum_time is not None:
+        plt.text(quorum_time+0.5, max(max([to_fahrenheit(t) for t in s]) for s in temps),
+                "Quorum Reached", color="green")
 
-# Labels and formatting
-ax.set_title("Smart Home Sensor Temperature Trends")
-ax.set_xlabel("Time Step")
-ax.set_ylabel("Temperature (°F)")
-ax.legend()
-ax.grid(True)
+    # Labels and formatting
+    ax.set_title("Smart Home Sensor Temperature Trends")
+    ax.set_xlabel("Time Step")
+    ax.set_ylabel("Temperature (°F)")
+    ax.legend()
+    ax.grid(True)
 
-# Ensure output directory exists
-out_dir = os.path.join("data")
-os.makedirs(out_dir, exist_ok=True)
+    # Ensure output directory exists
+    out_dir = os.path.join("data")
+    os.makedirs(out_dir, exist_ok=True)
 
-# Save before show. Use tight bounding box and higher dpi to avoid empty/white images
-out_path = os.path.join(out_dir, "temperature_trends.png")
-fig.tight_layout()
-fig.savefig(out_path, bbox_inches="tight", dpi=150)
+    # Save before show. Use tight bounding box and higher dpi to avoid empty/white images
+    out_path = os.path.join(out_dir, "temperature_trends.png")
+    fig.tight_layout()
+    fig.savefig(out_path, bbox_inches="tight", dpi=150)
 
-# Optionally display the figure in interactive environments
-plt.show()
-plt.close(fig)
+    # Optionally display the figure in interactive environments
+    plt.show()
+    plt.close(fig)
