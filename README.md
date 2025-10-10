@@ -112,7 +112,19 @@ The core simulation uses only Python standard library — these packages are onl
 
 ## Project structure
 
-`smart_home_fire_sim/ ├── main.py            # Entry point ├── simulation.py      # Orchestrates sensors, voting, and ledger writes ├── sensor.py          # Sensor class (physical + twin) ├── digital_twin.py    # Digital twin (rolling expectation) ├── blockchain.py      # Local blockchain ledger implementation ├── config.py          # Simulation parameters (edit here) ├── requirements.txt   # optional packages for plotting/analysis └── data/     ├── ledger.json    # append-only ledger (auto-created)     └── results.csv    # optional metrics output`
+```
+smart_home_fire_sim/ 
+├── main.py            # Entry point 
+├── simulation.py      # Orchestrates sensors, voting, and ledger writes 
+├── sensor.py          # Sensor class (physical + twin) 
+├── digital_twin.py    # Digital twin (rolling expectation) 
+├── blockchain.py      # Local blockchain ledger implementation 
+├── config.py          # Simulation parameters (edit here) 
+├── requirements.txt   # optional packages for plotting/analysis 
+└── data/     
+    ├── ledger.json    # append-only ledger (auto-created)     
+    └── results.csv    # optional metrics output
+```
 
 ---
 
