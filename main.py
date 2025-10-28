@@ -1,6 +1,10 @@
 # main.py
 import time
+import time
 from simulation import run_simulation
+from metrics import Metrics
+import plots
+import threading
 from metrics import Metrics
 import plots
 import threading
@@ -23,5 +27,9 @@ print("✅ Plots generated!")
 # === Step 4 (Optional): Launch HCI dashboard ===
 launch_dashboard = input("Do you want to launch the HCI dashboard? (y/n): ").lower()
 if launch_dashboard == 'y':
-    import user_interface
+    from user_interface import Dashboard
+    print("🖥️ Launching HCI Dashboard...")
+    Dashboard()
+    # threading.Thread(target=Dashboard, daemon=True).start()     # this runs the Tkinter mainloop
+    print("✅ Dashboard closed.")
     # Dashboard runs in its own window and reads ledger.json in real-time
