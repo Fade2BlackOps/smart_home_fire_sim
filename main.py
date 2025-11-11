@@ -8,6 +8,10 @@ import threading
 from metrics import Metrics
 import plots
 import threading
+import sys
+
+# Ensure UTF-8 encoding for emojis
+sys.stdout.reconfigure(encoding='utf-8')
 
 # === Step 1: Run the simulation ===
 print("🚀 Running Smart Home Fire Simulation...")
