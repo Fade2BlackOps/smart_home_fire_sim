@@ -43,6 +43,7 @@ class Blockchain:
         self.chain.append(block.__dict__)
         with open(LEDGER_PATH, "a") as f:
             f.write(json.dumps(block.__dict__) + "\n")
+            f.flush()
 
     def create_new_block(self, data):
         index = len(self.chain)

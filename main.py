@@ -29,11 +29,13 @@ plots.generate_plot()  # We will slightly modify plots.py to have a generate_plo
 print("✅ Plots generated!")
 
 # === Step 4 (Optional): Launch HCI dashboard ===
-launch_dashboard = input("Do you want to launch the HCI dashboard? (y/n): ").lower()
+launch_dashboard = input("Do you want to launch the Flask HCI dashboard? (y/n): ").strip().lower()
 if launch_dashboard == 'y':
-    from user_interface import Dashboard
-    print("🖥️ Launching HCI Dashboard...")
-    Dashboard()
-    # threading.Thread(target=Dashboard, daemon=True).start()     # this runs the Tkinter mainloop
-    print("✅ Dashboard closed.")
-    # Dashboard runs in its own window and reads ledger.json in real-time
+    # run the flask server in a background thread so the terminal stays interactive
+    from flask_app import run_server
+    import threading
+    print("🖥️ Launching Flask HCI Dashboard at http://0.0.0.0:5000 ...")
+    t = threading.Thread(target=lambda: run_server(host="0.0.0.0", port=5000, background_thread=True), daemon=True)
+    t.start()
+    print("Dashboard launched in background thread. Press Enter to exit.")
+    input()
