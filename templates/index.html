@@ -1,0 +1,51 @@
+<!-- templates/index.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart Home Safety Dashboard</title>
+
+  <link rel="stylesheet" href="/static/styles.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- socket.io client (served by Flask-SocketIO) -->
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Smart Home Safety Dashboard</h1>
+    <div id="status">Status: <span id="status-text">Waiting for data...</span></div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Temperatures (last updates)</h2>
+      <canvas id="tempsChart" width="800" height="300"></canvas>
+    </section>
+
+    <section class="panel">
+      <h2>Latest Block</h2>
+      <div id="latest">
+        <p><strong>Time step:</strong> <span id="latest-time">--</span></p>
+        <p><strong>Decision:</strong> <span id="latest-decision">--</span></p>
+        <p><strong>Votes:</strong> <span id="latest-votes">--</span></p>
+      </div>
+    </section>
+
+    <section class="panel ledger">
+      <h2>Recent Ledger (latest 20)</h2>
+      <table id="ledger-table">
+        <thead><tr><th>Index</th><th>Time</th><th>Decision</th><th>Votes</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <small>Live ledger streaming • Refreshes every second</small>
+  </footer>
+
+  <script src="/static/main.js"></script>
+</body>
+</html>
