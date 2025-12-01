@@ -33,8 +33,8 @@ print("✅ Plots generated!")
 launch_dashboard = input("Do you want to launch the Flask HCI dashboard? (y/n): ").strip().lower()
 if launch_dashboard == 'y':
     from flask_app import run_server
-    print("🖥️  Launching Flask HCI Dashboard at http://0.0.0.0:5000 ...")
+    print("🖥️  Launching Flask HCI Dashboard at http://127.0.0.1:5000 ...")
     print("   (Press CTRL+C to quit)")
     
     # Run directly (blocking), NOT in a thread
-    run_server(host="0.0.0.0", port=5000, background_thread=True)
+    run_server(host="127.0.0.1", port=5000, background_thread=True)
