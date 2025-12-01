@@ -1,45 +1,50 @@
-// static/main.js
-const socket = io("/dashboard", { 
-  transports: ["websocket", "polling"] 
-  }
-);
+// static/main.js (Polling Version)
 
 let chart = null;
-const sensorCount = 9; // fallback; your simulation may change this. Chart adapts dynamically.
 
 function createChart(labels, datasets) {
   const ctx = document.getElementById("tempsChart").getContext("2d");
   if (chart) {
-    chart.destroy();
-  }
-  chart = new Chart(ctx, {
-    type: "line",
-    data: { labels: labels, datasets: datasets },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: "bottom", labels: { color: "#cfeff1" } },
-      },
-      scales: {
-        x: { ticks: { color: "#9aa4b2" } },
-        y: { ticks: { color: "#9aa4b2" } }
+    chart.data.labels = labels;
+    chart.data.datasets = datasets;
+    chart.update();
+  } else {
+    chart = new Chart(ctx, {
+      type: "line",
+      data: { labels: labels, datasets: datasets },
+      options: {
+        responsive: true,
+        animation: false, // Disable animation for smoother live updates
+        plugins: {
+          legend: { position: "bottom", labels: { color: "#cfeff1" } },
+        },
+        scales: {
+          x: { ticks: { color: "#9aa4b2" } },
+          y: { ticks: { color: "#9aa4b2" } }
+        }
       }
-    }
-  });
+    });
+  }
 }
 
 function buildDatasets(latestBlocks) {
   if (!latestBlocks || latestBlocks.length === 0) return {labels:[], datasets:[]};
-  // assume temps arrays are same length = sensor count
-  const sensors = latestBlocks[0].temps.length;
-  const labels = latestBlocks.map(b => `t=${b.time}`);
+  
+  // Safety check: ensure first block has temps
+  const firstValid = latestBlocks.find(b => b.data && b.data.temps);
+  if (!firstValid) return {labels:[], datasets:[]};
+
+  const sensorCount = firstValid.data.temps.length;
+  const labels = latestBlocks.map(b => `t=${b.data.time}`);
+  
   const datasets = [];
-  for (let i = 0; i < sensors; i++) {
-    const data = latestBlocks.map(b => (b.temps ? b.temps[i] : null));
+  for (let i = 0; i < sensorCount; i++) {
+    const data = latestBlocks.map(b => (b.data && b.data.temps ? b.data.temps[i] : null));
     datasets.push({
       label: `Sensor ${i}`,
       data,
       fill: false,
+      borderColor: `hsl(${i * 40}, 70%, 50%)`, // Auto-color sensors
       tension: 0.2,
       pointRadius: 2
     });
@@ -47,35 +52,43 @@ function buildDatasets(latestBlocks) {
   return { labels, datasets };
 }
 
-socket.on("connect", () => {
-  document.getElementById("status-text").innerText = "Connected";
-});
+async function fetchData() {
+  try {
+    const response = await fetch('/api/updates');
+    const payload = await response.json();
+    
+    const blocks = payload.blocks || [];
+    const latest = payload.latest || {};
 
-socket.on("ledger_update", (payload) => {
-  const blocks = payload.blocks || [];
-  const latest = payload.latest || null;
+    document.getElementById("status-text").innerText = "Connected (Polling)";
 
-  // Update latest info panel
-  if (latest) {
+    // Update latest info
     document.getElementById("latest-time").innerText = latest.time ?? "--";
     document.getElementById("latest-decision").innerText = latest.decision ?? "--";
     document.getElementById("latest-votes").innerText = latest.votes ? latest.votes.join(", ") : "--";
+
+    // Update table
+    const tbody = document.querySelector("#ledger-table tbody");
+    tbody.innerHTML = "";
+    blocks.slice().reverse().forEach(b => {
+      const tr = document.createElement("tr");
+      const d = b.data || {};
+      tr.innerHTML = `<td>${b.index}</td><td>${d.time}</td><td>${d.decision}</td><td>${d.votes}</td>`;
+      tbody.appendChild(tr);
+    });
+
+    // Update Chart
+    const built = buildDatasets(blocks);
+    if (built.datasets.length > 0) {
+        createChart(built.labels, built.datasets);
+    }
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("status-text").innerText = "Disconnected";
   }
+}
 
-  // Update ledger table
-  const tbody = document.querySelector("#ledger-table tbody");
-  tbody.innerHTML = "";
-  blocks.slice().reverse().forEach(b => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${b.index ?? "--"}</td><td>${b.time ?? "--"}</td><td>${b.decision ?? "--"}</td><td>${b.votes ? b.votes.map(v=>v?"1":"0").join("") : "--"}</td>`;
-    tbody.appendChild(tr);
-  });
-
-  // Update chart
-  const built = buildDatasets(blocks);
-  createChart(built.labels, built.datasets);
-});
-
-socket.on("ledger_error", (err) => {
-  document.getElementById("status-text").innerText = "Error: " + (err.error || "unknown");
-});
+// Poll every 1000ms (1 second)
+setInterval(fetchData, 1000);
+fetchData(); // Initial call
