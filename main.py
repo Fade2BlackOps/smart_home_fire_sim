@@ -27,14 +27,3 @@ metrics.report()
 print("📊 Generating plots...")
 plots.generate_plot()  # We will slightly modify plots.py to have a generate_plot() function
 print("✅ Plots generated!")
-
-# === Step 4: Launch HCI dashboard ===
-# We run this directly on the main thread to avoid Socket.IO protocol errors
-launch_dashboard = input("Do you want to launch the Flask HCI dashboard? (y/n): ").strip().lower()
-if launch_dashboard == 'y':
-    from flask_app import run_server
-    print("🖥️  Launching Flask HCI Dashboard at http://127.0.0.1:5000 ...")
-    print("   (Press CTRL+C to quit)")
-    
-    # Run directly (blocking), NOT in a thread
-    run_server(host="127.0.0.1", port=5000, background_thread=True)
