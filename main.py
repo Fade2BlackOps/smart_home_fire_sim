@@ -34,8 +34,8 @@ if launch_dashboard == 'y':
     # run the flask server in a background thread so the terminal stays interactive
     from flask_app import run_server
     import threading
-    print("🖥️ Launching Flask HCI Dashboard at http://0.0.0.0:5000 ...")
-    t = threading.Thread(target=lambda: run_server(host="0.0.0.0", port=5000, background_thread=True), daemon=True)
+    print("🖥️  Launching Flask HCI Dashboard at http://127.0.0.1:5000 ...")
+    t = threading.Thread(target=lambda: run_server(host="127.0.0.1", port=5000, background_thread=True), daemon=True)
     t.start()
     print("Dashboard launched in background thread. Press Enter to exit.")
     input()
