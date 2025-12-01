@@ -36,16 +36,25 @@ def read_ledger():
         return []
     return blocks
 
+# flask_app.py
+
 def ledger_summary():
     """Return compact summary for client UI (last block + vote counts + times)."""
     blocks = read_ledger()
     if not blocks:
         return {"blocks": [], "latest": None}
+    
+    # --- Filter out the Genesis block ---
+    # We only want blocks that actually have temperature data.
+    valid_blocks = [b for b in blocks if b.get("data", {}).get("temps")]
+    
+    if not valid_blocks:
+        return {"blocks": [], "latest": None}
+
     # send last N blocks (e.g. last 20)
     N = 20
-    recent = blocks[-N:]
+    recent = valid_blocks[-N:]
     latest = recent[-1]
-    # keep only necessary fields for UI
     compact = []
     for b in recent:
         compact.append({

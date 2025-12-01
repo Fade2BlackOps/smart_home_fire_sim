@@ -34,9 +34,20 @@ class Blockchain:
                 lines = f.readlines()
                 for line in lines:
                     self.chain.append(json.loads(line))
+        # else:
+        #     # Create genesis block
+        #     genesis = Block(0, str(datetime.now()), {"message": "Genesis Block"}, "0")
+        #     self.add_block(genesis)
+
         else:
-            # Create genesis block
-            genesis = Block(0, str(datetime.now()), {"message": "Genesis Block"}, "0")
+            # Create a "Safe" Genesis block with dummy data so the UI doesn't crash
+            genesis_data = {
+                "time": 0,
+                "temps": [22.0] * 9,   # Dummy temps for 9 sensors
+                "votes": [False] * 9,  # Dummy votes
+                "decision": "SYSTEM START"
+            }
+            genesis = Block(0, str(datetime.now()), genesis_data, "0")
             self.add_block(genesis)
 
     def add_block(self, block):
