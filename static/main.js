@@ -1,5 +1,8 @@
 // static/main.js
-const socket = io("/dashboard");
+const socket = io("/dashboard", { 
+  transports: ["websocket", "polling"] 
+  }
+);
 
 let chart = null;
 const sensorCount = 9; // fallback; your simulation may change this. Chart adapts dynamically.

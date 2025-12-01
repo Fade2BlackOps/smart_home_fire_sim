@@ -9,7 +9,9 @@ from flask_socketio import SocketIO, emit
 LED_COLOR = {True: "red", False: "green"}
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
+
+# Switch to 'threading' for Windows stability
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
 LED_COLOR = {True: "red", False: "green"}
 
