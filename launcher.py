@@ -21,6 +21,7 @@ def run_system():
     # 2. Open the Web Browser automatically
     print(f"🌐  Opening Dashboard at {DASHBOARD_URL}")
     webbrowser.open(DASHBOARD_URL)
+    time.sleep(3)  # Small delay to ensure browser opens before simulation starts
 
     # 3. Run the Main Simulation
     print("🔥  Running Simulation (Check dashboard for live updates!)...")

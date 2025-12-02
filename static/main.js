@@ -89,6 +89,9 @@ async function fetchData() {
   }
 }
 
-// Poll every 1000ms (1 second)
-setInterval(fetchData, 1000);
+// HTTP Polling Frequency 
+// every 1000ms = every 1 second
+// every 500ms = every 0.5 seconds
+// every 100ms = every 0.1 seconds
+setInterval(fetchData, 100);
 fetchData(); // Initial call
