@@ -287,7 +287,7 @@ Minimal example:
 
 ---
 
-## Experiments to run (suggestions for your HCII paper)
+## Experiments to run:
 
 - **Baseline vs. voting**: Compare a single-sensor threshold (baseline) vs. quorum voting. Report false positive reduction and detection latency.
     
