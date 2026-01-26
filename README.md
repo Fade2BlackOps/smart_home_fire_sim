@@ -1,9 +1,8 @@
 # Real-Time Fabrication Filtering for Smart-Home Safety — Simulation Prototype
 
-> A modular Python prototype that simulates a zero-trust smart-home safety system: temperature/smoke sensors + digital twins + lightweight voting consensus + an append-only blockchain ledger.  
-> Intended for research prototyping and preliminary results for an HCII submission (human-centered evaluation + system performance).
+A modular Python prototype that simulates a zero-trust smart-home safety system: temperature/smoke sensors + digital twins + lightweight voting consensus + an append-only blockchain ledger.  
 
-This repository contains a clean, VS Code–friendly Python project you can run locally (or on Raspberry Pis) to reproduce the simulations and generate the ledger/metrics used in your preliminary results.
+Intended for research prototyping and preliminary results for an HCII submission (human-centered evaluation + system performance).
 
 ---
 
@@ -87,13 +86,17 @@ This repository contains a clean, VS Code–friendly Python project you can run 
 
 **Clone & set up**
 
-`git clone <your-repo-url> smart_home_fire_sim cd smart_home_fire_sim python3 -m venv .venv # activate the venv: # Linux / macOS: source .venv/bin/activate # Windows (PowerShell): .venv\Scripts\Activate.ps1 pip install -r requirements.txt    # optional; see note below`
+```
+git clone https://github.com/Fade2BlackOps/smart_home_fire_sim.git 
 
-> `requirements.txt` (optional) may contain:
+cd smart_home_fire_sim 
 
-`pandas>=1.0 matplotlib>=3.0 flask>=2.0   # only if you add web UI`
+python3 -m venv .venv # activate the venv: 
+# Linux / macOS: source .venv/bin/activate 
+# Windows (PowerShell): .venv\Scripts\Activate.ps1 
 
-The core simulation uses only Python standard library — these packages are only needed for metrics export or plotting.
+pip install -r requirements.txt
+```
 
 **Run the simulation**
 
@@ -134,7 +137,18 @@ smart_home_fire_sim/
 
 Edit `config.py` to run different experiments. Important fields:
 
-`NUM_SENSORS = 5 BASE_TEMP = 22.0 TIME_STEPS = 30 FIRE_ROOM = 2 FIRE_START = 10 ALERT_THRESHOLD = 55.0 VOTE_QUORUM = 3 TWIN_HISTORY_SIZE = 5 LEDGER_PATH = "data/ledger.json" RESULTS_PATH = "data/results.csv"`
+```
+NUM_SENSORS = 5 
+BASE_TEMP = 22.0 
+TIME_STEPS = 30 
+FIRE_ROOM = 2 
+FIRE_START = 10 
+ALERT_THRESHOLD = 55.0 
+VOTE_QUORUM = 3 
+TWIN_HISTORY_SIZE = 5 
+LEDGER_PATH = "data/ledger.json" 
+RESULTS_PATH = "data/results.csv"
+```
 
 **Common experiments**: change `NUM_SENSORS`, `VOTE_QUORUM`, and `ALERT_THRESHOLD` to test sensitivity vs. latency tradeoffs.
 
@@ -203,7 +217,33 @@ Edit `config.py` to run different experiments. Important fields:
 
 Each ledger entry (one per timestep) is a JSON block similar to:
 
-`{   "index": 12,   "timestamp": "2025-10-07T18:33:12.123456",   "data": {     "time": 12,     "temps": [23.0, 32.0, 65.0, 29.8, 24.5],     "votes": [false, true, true, true, false],     "decision": "🔥 FIRE DETECTED!"   },   "prev_hash": "a48b4f...",   "hash": "c2f7b9..." }`
+```json
+{
+  "index": 12,
+  "timestamp": "2025-10-07T18:33:12.123456",
+  "data": {
+    "time": 12,
+    "temps": [
+      23.0,
+      32.0,
+      65.0,
+      29.8,
+      24.5
+    ],
+    "votes": [
+      false,
+      true,
+      true,
+      true,
+      false
+    ],
+    "decision": "🔥 FIRE DETECTED!"
+  },
+  "prev_hash": "a48b4f...",
+  "hash": "c2f7b9..."
+}
+```
+
 
 This is a **simulation ledger**: it demonstrates immutability and auditability in the prototype. It is _not_ a drop-in substitute for Hyperledger Fabric; see [Extending](#extending-toward-a-real-permissioned-blockchain-notes).
 
@@ -316,7 +356,7 @@ This prototype writes a local chained JSON ledger. To integrate with a **real pe
 
 ---
 
-## License, attribution, and suggested citations
+<!-- ## License, attribution, and suggested citations
 
 You can include this repository and its code in your lab report / proposal. Suggested citation for the prototype (change to your names and year):
 
@@ -330,4 +370,4 @@ Cite the background papers you used in your literature review (titles provided i
     
 - “A Blockchain-Based Decentralized, Fair and Authenticated Information Sharing Scheme in Zero Trust IoT”
     
-- “Ensuring Zero Trust IoT Data Privacy: Differential Privacy in Blockchain Using Federated Learning”
+- “Ensuring Zero Trust IoT Data Privacy: Differential Privacy in Blockchain Using Federated Learning” -->
