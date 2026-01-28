@@ -1,4 +1,4 @@
-# flask_app.py (The Polling Version)
+# flask_app.py
 import json
 import os
 from flask import Flask, render_template, send_from_directory, jsonify
