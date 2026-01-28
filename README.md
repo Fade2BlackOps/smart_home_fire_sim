@@ -100,7 +100,7 @@ pip install -r requirements.txt
 
 **Run the simulation**
 
-`python main.py`
+`python launcher.py`
 
 **Output**
 
