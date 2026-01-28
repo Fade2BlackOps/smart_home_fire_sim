@@ -28,6 +28,11 @@ def run_system():
     try:
         # This will block here until main.py finishes running
         subprocess.run([sys.executable, "main.py"], check=True)
+
+        # 3.1. Export metrics after simulation completes
+        print("📊  Exporting Simulation Metrics...")
+        subprocess.run([sys.executable, "export_metrics_csv.py"], check=True)
+
     except KeyboardInterrupt:
         print("\n🛑  Stopping simulation...")
 

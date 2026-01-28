@@ -1,6 +1,11 @@
 import json
 import os
+
+import matplotlib
+matplotlib.use("Agg")  # Use non-interactive backend for environments without display
+
 import matplotlib.pyplot as plt
+
 from config import FIRE_START
 
 
@@ -9,7 +14,7 @@ def to_fahrenheit(celsius):
     return (celsius * 9 / 5) + 32
 
 
-def generate_plot(ledger_file="data/ledger.json"):
+def generate_plot(ledger_file="data/ledger.json", show=False):
     """
     Generate and save a plot of sensor temperature trends over time.
     Reads from the blockchain ledger file (ledger.json).
@@ -72,5 +77,7 @@ def generate_plot(ledger_file="data/ledger.json"):
     fig.savefig(out_path, bbox_inches="tight", dpi=150)
 
     # Optionally display
-    plt.show()
+    if show:
+        plt.show()
+        
     plt.close(fig)

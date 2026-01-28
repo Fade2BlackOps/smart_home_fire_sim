@@ -1,13 +1,7 @@
 # main.py
-import time
-import time
 from simulation import run_simulation
 from metrics import Metrics
 import plots
-import threading
-from metrics import Metrics
-import plots
-import threading
 import sys
 
 # Ensure UTF-8 encoding for emojis
@@ -25,5 +19,5 @@ metrics.report()
 
 # === Step 3: Generate plots ===
 print("📊 Generating plots...")
-plots.generate_plot()  # We will slightly modify plots.py to have a generate_plot() function
+plots.generate_plot(show=False)  # We will slightly modify plots.py to have a generate_plot() function
 print("✅ Plots generated!")
